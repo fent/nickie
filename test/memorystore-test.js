@@ -7,6 +7,7 @@ var nick = 'roly';
 var ip = '1';
 var email = 'rolypoly@gmail.com';
 var password = 'aaaaah';
+var password2 = 'imgay';
 var key;
 
 describe('user connects', function() {
@@ -115,6 +116,42 @@ describe('user identifies', function() {
       store.info(nick, nick, function(err, user) {
         if (err) throw err;
         assert.ok(!user.identified);
+        done();
+      });
+    });
+  });
+});
+
+describe('change the passwod', function() {
+  it('to a new one', function(done) {
+    store.identify(nick, password, function(err) {
+      if (err) throw err;
+      store.setPassword(nick, password2, function(err) {
+        if (err) throw err;
+        store.logout(nick, done);
+      });
+    });
+  });
+
+  it('old password should not work', function(done) {
+    store.identify(nick, password, function(err, identified) {
+      if (err) throw err;
+      assert.ok(!identified);
+      store.info(nick, nick, function(err, user) {
+        if (err) throw err;
+        assert.ok(!user.identified);
+        done();
+      });
+    });
+  });
+
+  it('but the new one should', function(done) {
+    store.identify(nick, password2, function(err, identified) {
+      if (err) throw err;
+      assert.ok(identified);
+      store.info(nick, nick, function(err, user) {
+        if (err) throw err;
+        assert.ok(user.identified);
         done();
       });
     });
