@@ -1,4 +1,4 @@
-var MemoryStore = require('../lib/store/MemoryStore');
+var MemoryStore = require('../lib/store/memory-store');
 var assert      = require('assert');
 var store       = new MemoryStore();
 
@@ -12,33 +12,47 @@ var key;
 
 describe('user connects', function() {
   it('retrieve user metadata', function(done) {
-    store.userConnected(nick, ip);
-    store.info(nick, nick, function(err, user) {
+    store.userConnected(nick, ip, function(err) {
       if (err) throw err;
-      assert.ok(user);
-      assert.ok(user.online);
-      assert.equal(user.from, ip);
-      done();
+      store.info(nick, nick, function(err, user) {
+        if (err) throw err;
+        assert.ok(user);
+        assert.ok(user.online);
+        assert.equal(user.from, ip);
+        done();
+      });
     });
   });
 });
 
 describe('user disconnects', function() {
   it('metadata reflects user being offline', function(done) {
-    store.userDisconnected(nick, 'bye');
-    store.info(nick, nick, function(err, user) {
+    store.userDisconnected(nick, 'bye', function(err) {
       if (err) throw err;
-      assert.ok(user);
-      assert.ok(!user.online);
-      assert.ok(user.lastQuitMsg, 'bye');
-      done();
+      store.info(nick, nick, function(err, user) {
+        if (err) throw err;
+        assert.ok(user);
+        assert.ok(!user.online);
+        assert.ok(user.lastQuitMsg, 'bye');
+        done();
+      });
     });
   });
 });
 
 describe('user registers after connecting', function() {
+  it('number of accounts is 0', function(done) {
+    store.userConnected(nick, ip, function(err) {
+      if (err) throw err;
+      store.getNumOfAccounts(email, function(err, num) {
+        if (err) throw err;
+        assert.equal(num, 0);
+        done();
+      });
+    });
+  });
+
   it('info now shows more data', function(done) {
-    store.userConnected(nick, ip);
     store.register(nick, password, email, function(err) {
       if (err) throw err;
       store.info(nick, nick, function(err, user) {
@@ -57,6 +71,14 @@ describe('user registers after connecting', function() {
           done();
         });
       });
+    });
+  });
+
+  it('number of accounts is 1', function(done) {
+    store.getNumOfAccounts(email, function(err, num) {
+      if (err) throw err;
+      assert.equal(num, 1);
+      store.userDisconnected(nick, 'cya', done);
     });
   });
 });
@@ -152,6 +174,23 @@ describe('change the passwod', function() {
       store.info(nick, nick, function(err, user) {
         if (err) throw err;
         assert.ok(user.identified);
+        done();
+      });
+    });
+  });
+});
+
+describe('drop user', function() {
+  it('user metadata reflects correctly', function(done) {
+    store.drop(nick, nick, function(err) {
+      if (err) throw err;
+      store.info(nick, nick, function(err, user) {
+        if (err) throw err;
+        assert.ok(!user.password);
+        assert.ok(!user.email);
+        assert.ok(!user.registered);
+        assert.ok(!user.verified);
+        assert.ok(!user.key);
         done();
       });
     });
