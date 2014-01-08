@@ -3,34 +3,53 @@ var errors     = require('../lib/replies/en').errors;
 var assert     = require('assert');
 
 
+function fntest(fn, key, test) {
+  it(key, function() {
+    var args = [function() {
+      var results = test.results;
+      var len = arguments.length;
+
+      if (results) {
+        assert.equal(results.length, len);
+        for (var i = 0; i < len; i++) {
+          assert.equal(results[i], arguments[i]);
+        }
+      } else {
+        assert.equal(len, 0);
+      }
+    }].concat(test.args);
+    fn.apply(null, args);
+  });
+}
+
+function fntests(fn, tests) {
+  for (var key in tests) {
+    fntest(fn, key, tests[key]);
+  }
+}
+
+
 describe('unknownCommand', function() {
   var commands = ['a', 'foo'];
 
   describe('without `inc`', function() {
-    var fn = middleware.unknownCommand(commands);
-
-    it('gives error when calling unknown command', function() {
-      fn(function(err, cmd) {
-        assert.equal(err, errors.unknownCommand);
-        assert.equal(cmd, 'ohoh');
-      }, null, 'ohoh');
-    });
-
-    it('gives no error with the right command', function() {
-      fn(function(err) {
-        assert.ok(!err);
-      }, null, 'foo');
+    fntests(middleware.unknownCommand(commands), {
+      'gives error when calling unknown command': {
+        args: [null, 'ohoh'],
+        results: [errors.unknownCommand, 'ohoh']
+      },
+      'gives no error with the right command': {
+        args: [null, 'foo']
+      }
     });
   });
 
   describe('with `inc` defined', function() {
-    var fn = middleware.unknownCommand(commands, 'set');
-
-    it('gives custom error when calling unknown command', function() {
-      fn(function(err, cmd) {
-        assert.equal(err, errors.unknownCommand);
-        assert.equal(cmd, 'set ohoh');
-      }, null, 'ohoh');
+    fntests(middleware.unknownCommand(commands, 'set'), {
+      'gives custom error when calling unknown command': {
+        args: [null, 'ohoh'],
+        results: [errors.unknownCommand, 'set ohoh']
+      }
     });
   });
 });
