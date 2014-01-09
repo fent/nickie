@@ -17,7 +17,7 @@ function fntest(fn, key, test) {
       } else {
         assert.equal(len, 0);
       }
-    }].concat(test.args);
+    }, null].concat(test.args);
     fn.apply(null, args);
   });
 }
@@ -35,11 +35,11 @@ describe('unknownCommand', function() {
   describe('without `inc`', function() {
     fntests(middleware.unknownCommand(commands), {
       'gives error when calling unknown command': {
-        args: [null, 'ohoh'],
+        args: ['ohoh'],
         results: [errors.unknownCommand, 'ohoh']
       },
       'gives no error with the right command': {
-        args: [null, 'foo']
+        args: ['foo']
       }
     });
   });
@@ -47,9 +47,22 @@ describe('unknownCommand', function() {
   describe('with `inc` defined', function() {
     fntests(middleware.unknownCommand(commands, 'set'), {
       'gives custom error when calling unknown command': {
-        args: [null, 'ohoh'],
+        args: ['ohoh'],
         results: [errors.unknownCommand, 'set ohoh']
       }
     });
+  });
+});
+
+
+describe('notEnoughParameters', function() {
+  fntests(middleware.notEnoughParameters(1), {
+    'gives error with too few parameters': {
+      args: [],
+      results: [errors.notEnoughParameters]
+    },
+    'gives no error with enough parameters': {
+      args: [1]
+    }
   });
 });
