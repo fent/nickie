@@ -1,4 +1,4 @@
-var middleware = require('../lib/middleware');
+var middleware = require('../lib/dynamic-middleware');
 var errors     = require('../lib/replies/en').errors;
 var assert     = require('assert');
 
