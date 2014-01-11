@@ -1,6 +1,6 @@
-var middleware = require('../lib/dynamic-middleware');
-var errors     = require('../lib/replies/en').errors;
-var assert     = require('assert');
+var dmw    = require('../lib/dynamic-middleware');
+var errors = require('../lib/replies/en').errors;
+var assert = require('assert');
 
 
 function fntest(fn, key, test) {
@@ -33,7 +33,7 @@ describe('unknownCommand', function() {
   var commands = ['a', 'foo'];
 
   describe('without `inc`', function() {
-    fntests(middleware.unknownCommand(commands), {
+    fntests(dmw.unknownCommand(commands), {
       'gives error when calling unknown command': {
         args: ['ohoh'],
         results: [errors.unknownCommand, 'ohoh']
@@ -45,7 +45,7 @@ describe('unknownCommand', function() {
   });
 
   describe('with `inc` defined', function() {
-    fntests(middleware.unknownCommand(commands, 'set'), {
+    fntests(dmw.unknownCommand(commands, 'set'), {
       'gives custom error when calling unknown command': {
         args: ['ohoh'],
         results: [errors.unknownCommand, 'set ohoh']
@@ -56,7 +56,7 @@ describe('unknownCommand', function() {
 
 
 describe('notEnoughParameters', function() {
-  fntests(middleware.notEnoughParameters(1), {
+  fntests(dmw.notEnoughParameters(1), {
     'gives error with too few parameters': {
       args: [],
       results: [errors.notEnoughParameters]
