@@ -6,21 +6,33 @@ var assert   = require('assert');
 
 function fntest(fn, key, test) {
   var nickserv = new NickServ();
-  it(key, function() {
-    var args = [function() {
-      var results = test.results;
-      var len = arguments.length;
+  it(key, function(done) {
+    function run() {
+      var args = [function() {
+        var results = test.results;
+        var len = arguments.length;
 
-      if (results) {
-        assert.equal(results.length, len);
-        for (var i = 0; i < len; i++) {
-          assert.equal(results[i], arguments[i]);
+        if (results) {
+          assert.equal(results.length, len);
+          for (var i = 0; i < len; i++) {
+            assert.equal(results[i], arguments[i]);
+          }
+        } else {
+          assert.equal(len, 0);
         }
-      } else {
-        assert.equal(len, 0);
-      }
-    }].concat(test.args);
-    fn.apply(nickserv, args);
+      }].concat(test.args);
+      fn.apply(nickserv, args);
+      done();
+    }
+
+    if (test.setup) {
+      test.setup.call(nickserv, function(err) {
+        if (err) return done(err);
+        run();
+      });
+    } else {
+      run();
+    }
   });
 }
 
@@ -39,6 +51,21 @@ describe('networkServices', function() {
     },
     'gives no error when nick is not part of network services': {
       args: ['mynick', 'yoloboy']
+    }
+  });
+});
+
+describe('isRegistered', function() {
+  fntests(mw.isRegistered, {
+    'gives error when user is not registered': {
+      args: ['mynick', 'someuser'],
+      results: [errors.notRegistered, 'someuser']
+    },
+    'gives no error when user is registered': {
+      setup: function(done) {
+        this.store.register('someuser', '', '', done);
+      },
+      args: ['mynick', 'someuser']
     }
   });
 });
