@@ -28,7 +28,6 @@ function fntests(fn, tests) {
   }
 }
 
-
 describe('unknownCommand', function() {
   var commands = ['a', 'foo'];
 
@@ -53,7 +52,6 @@ describe('unknownCommand', function() {
     });
   });
 });
-
 
 describe('notEnoughParameters', function() {
   fntests(dmw.notEnoughParameters(1), {
