@@ -6,7 +6,7 @@ var sinon    = require('sinon');
 
 
 function fntest(fn, key, test) {
-  var nickserv = new NickServ(null, null, test.options);
+  var nickserv = new NickServ(null, test.options);
   it(key, function(done) {
     function run() {
       var args = [function() {
@@ -67,7 +67,7 @@ describe('isRegistered', function() {
     },
     'gives no error when user is registered': {
       setup: function(done) {
-        this.store.register('someuser', '', '', done);
+        this.options.store.register('someuser', '', '', done);
       },
       args: ['mynick', 'someuser']
     }
@@ -82,7 +82,7 @@ describe('amRegistered', function() {
     },
     'gives no error when user is registered': {
       setup: function(done) {
-        this.store.register('mynick', '', '', done);
+        this.options.store.register('mynick', '', '', done);
       },
       args: ['mynick']
     }
@@ -106,7 +106,7 @@ describe('tooManyAccounts', function() {
   fntests(mw.tooManyAccounts, {
     'gives error when email has too many accounts registered': {
       setup: function(done) {
-        var store = this.store;
+        var store = this.options.store;
         store.register('mynick', 'pw', email, function(err) {
           if (err) return done(err);
           store.register('myothernick', 'pw', email, done);
@@ -118,14 +118,14 @@ describe('tooManyAccounts', function() {
     },
     'gives no error with not enough accounts': {
       setup: function(done) {
-        this.store.register('mynick', 'pw', email, done);
+        this.options.store.register('mynick', 'pw', email, done);
       },
       options: { maxAccounts: 2 },
       args: ['nick', 'password', email]
     },
     'gives no error when there are max number of accounts': {
       setup: function(done) {
-        this.store.register('mynick', 'pw', email, done);
+        this.options.store.register('mynick', 'pw', email, done);
       },
       args: ['nick', 'password', email]
     }
@@ -136,7 +136,7 @@ describe('alreadyRegistered', function() {
   fntests(mw.alreadyRegistered, {
     'gives error when nick has already been registered': {
       setup: function(done) {
-        this.store.register('nick', 'pw', 'whatever@gmail.com', done);
+        this.options.store.register('nick', 'pw', 'whatever@gmail.com', done);
       },
       args: ['nick'],
       results: [errors.alreadyRegistered, 'nick']
@@ -151,7 +151,7 @@ describe('tooSoon', function() {
   fntests(mw.tooSoon, {
     'gives error when command called too soon after user connects': {
       setup: function(done) {
-        this.store.userConnected('nicko', 'ip', done);
+        this.options.store.userConnected('nicko', 'ip', done);
       },
       options: { minToWait: 1 },
       args: ['nicko'],
@@ -160,7 +160,7 @@ describe('tooSoon', function() {
     'gives no error when enough time has passed': {
       setup: function(done) {
         var clock = this.clock = sinon.useFakeTimers();
-        this.store.userConnected('nicko', 'ip', function(err) {
+        this.options.store.userConnected('nicko', 'ip', function(err) {
           if (err) return done(err);
           clock.tick(1000);
           done();
@@ -174,7 +174,7 @@ describe('tooSoon', function() {
     },
     'gives no error when no minimum time set': {
       setup: function(done) {
-        this.store.userConnected('nicko', 'ip', done);
+        this.options.store.userConnected('nicko', 'ip', done);
       },
       args: ['nicko']
     }
@@ -205,7 +205,7 @@ describe('notAwaitingAuthorization', function() {
     },
     'gives error when user is already verified': {
       setup: function(done) {
-        this.store._setUser('nick', {
+        this.options.store._setUser('nick', {
           registered: true,
           verified: true,
         }, done);
@@ -215,7 +215,7 @@ describe('notAwaitingAuthorization', function() {
     },
     'gives no error when user is not verified yet': {
       setup: function(done) {
-        this.store.register('nick', 'pw', 'email', done);
+        this.options.store.register('nick', 'pw', 'email', done);
       },
       args: ['nick', 'register', 'nick']
     }
@@ -230,7 +230,7 @@ describe('isIdentified', function() {
     },
     'gives no error when user is identified': {
       setup: function(done) {
-        this.store.register('nick', 'pw', 'email', done);
+        this.options.store.register('nick', 'pw', 'email', done);
       },
       args: ['nick']
     }
