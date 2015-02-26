@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "mocha": "*",
-    "sinon": "~1.10.0"
+    "sinon": "^1.10.0"
   },
   "licenses": [ {
     "type": "MIT",
