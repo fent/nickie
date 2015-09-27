@@ -1,6 +1,8 @@
-# nickie [![Build Status](https://secure.travis-ci.org/fent/nickie.png)](http://travis-ci.org/fent/nickie)
+# nickie
 
 A nickserv bot for your irc server needs.
+
+[![Build Status](https://secure.travis-ci.org/fent/nickie.png)](http://travis-ci.org/fent/nickie) [![Dependency Status](https://gemnasium.com/fent/nickie.svg)](https://gemnasium.com/fent/nickie)
 
 # Usage
 
