@@ -13,9 +13,9 @@ var key;
 describe('user connects', function() {
   it('retrieve user metadata', function(done) {
     store.userConnected(nick, ip, function(err) {
-      if (err) throw err;
+      if (err) { return done(err); }
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(user);
         assert.ok(user.online);
         assert.equal(user.from, ip);
@@ -28,9 +28,9 @@ describe('user connects', function() {
 describe('user disconnects', function() {
   it('metadata reflects user being offline', function(done) {
     store.userDisconnected(nick, 'bye', function(err) {
-      if (err) throw err;
+      if (err) { return done(err); }
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(user);
         assert.ok(!user.online);
         assert.ok(user.lastQuitMsg, 'bye');
@@ -43,9 +43,9 @@ describe('user disconnects', function() {
 describe('user registers after connecting', function() {
   it('number of accounts is 0', function(done) {
     store.userConnected(nick, ip, function(err) {
-      if (err) throw err;
+      if (err) { return done(err); }
       store.getNumOfAccounts(email, function(err, num) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.equal(num, 0);
         done();
       });
@@ -54,9 +54,9 @@ describe('user registers after connecting', function() {
 
   it('info now shows more data', function(done) {
     store.register(nick, password, email, function(err) {
-      if (err) throw err;
+      if (err) { return done(err); }
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(user.password);
         assert.equal(user.email, email);
         assert.ok(user.registered);
@@ -65,7 +65,7 @@ describe('user registers after connecting', function() {
         key = user.key;
 
         store.isRegistered(nick, function(err, registered, verified) {
-          if (err) throw err;
+          if (err) { return done(err); }
           assert.ok(registered);
           assert.ok(!verified);
           done();
@@ -76,7 +76,7 @@ describe('user registers after connecting', function() {
 
   it('number of accounts is 1', function(done) {
     store.getNumOfAccounts(email, function(err, num) {
-      if (err) throw err;
+      if (err) { return done(err); }
       assert.equal(num, 1);
       store.userDisconnected(nick, 'cya', done);
     });
@@ -86,7 +86,7 @@ describe('user registers after connecting', function() {
 describe('verify after registering', function() {
   it('with the wrong key', function(done) {
     store.verify(nick, nick, 'WRONGKEY', function(err, verified) {
-      if (err) throw err;
+      if (err) { return done(err); }
       assert.ok(!verified);
       done();
     });
@@ -94,11 +94,11 @@ describe('verify after registering', function() {
 
   it('with the correct key', function(done) {
     store.verify(nick, nick, key, function(err, verified) {
-      if (err) throw err;
+      if (err) { return done(err); }
       assert.ok(verified);
 
       store.isRegistered(nick, function(err, registered, verified) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(registered);
         assert.ok(verified);
         done();
@@ -110,10 +110,10 @@ describe('verify after registering', function() {
 describe('user identifies', function() {
   it('with the wrong password', function(done) {
     store.identify(nick, 'OHOH', function(err, identified) {
-      if (err) throw err;
+      if (err) { return done(err); }
       assert.ok(!identified);
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(!user.identified);
         done();
       });
@@ -122,10 +122,10 @@ describe('user identifies', function() {
 
   it('with the correct password', function(done) {
     store.identify(nick, password, function(err, identified) {
-      if (err) throw err;
+      if (err) { return done(err); }
       assert.ok(identified);
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(user.identified);
         done();
       });
@@ -134,9 +134,9 @@ describe('user identifies', function() {
 
   it('can logout afterwards', function(done) {
     store.logout(nick, function(err) {
-      if (err) throw err;
+      if (err) { return done(err); }
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(!user.identified);
         done();
       });
@@ -147,9 +147,9 @@ describe('user identifies', function() {
 describe('change the passwod', function() {
   it('to a new one', function(done) {
     store.identify(nick, password, function(err) {
-      if (err) throw err;
+      if (err) { return done(err); }
       store.setPassword(nick, password2, function(err) {
-        if (err) throw err;
+        if (err) { return done(err); }
         store.logout(nick, done);
       });
     });
@@ -157,10 +157,10 @@ describe('change the passwod', function() {
 
   it('old password should not work', function(done) {
     store.identify(nick, password, function(err, identified) {
-      if (err) throw err;
+      if (err) { return done(err); }
       assert.ok(!identified);
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(!user.identified);
         done();
       });
@@ -169,10 +169,10 @@ describe('change the passwod', function() {
 
   it('but the new one should', function(done) {
     store.identify(nick, password2, function(err, identified) {
-      if (err) throw err;
+      if (err) { return done(err); }
       assert.ok(identified);
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(user.identified);
         done();
       });
@@ -183,9 +183,9 @@ describe('change the passwod', function() {
 describe('drop user', function() {
   it('user metadata reflects correctly', function(done) {
     store.drop(nick, nick, function(err) {
-      if (err) throw err;
+      if (err) { return done(err); }
       store.info(nick, nick, function(err, user) {
-        if (err) throw err;
+        if (err) { return done(err); }
         assert.ok(!user.password);
         assert.ok(!user.email);
         assert.ok(!user.registered);
