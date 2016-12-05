@@ -26,10 +26,5 @@
     "mocha": "*",
     "sinon": "^1.10.0"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/fent/nickie/raw/master/LICENSE"
-    }
-  ]
+  "license": "MIT"
 }
