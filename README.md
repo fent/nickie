@@ -3,7 +3,7 @@
 A nickserv bot for your irc server needs.
 
 [![Build Status](https://secure.travis-ci.org/fent/nickie.svg)](http://travis-ci.org/fent/nickie)
-[![Dependency Status](https://gemnasium.com/fent/nickie.svg)](https://gemnasium.com/fent/nickie)
+[![Dependency Status](https://david-dm.org/fent/nickie.svg)](https://david-dm.org/fent/nickie)
 [![codecov](https://codecov.io/gh/fent/nickie/branch/master/graph/badge.svg)](https://codecov.io/gh/fent/nickie)
 
 # Usage
