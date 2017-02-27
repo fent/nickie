@@ -29,11 +29,11 @@ Options can be
 
 ### Nickie#userConnected(nick, ip, [callback])
 
-Should be called when a user connects to the server.
+Should be called when a user connects to the server. Returns a promise if no callback is given.
 
 ### Nickie#userDisconnected(nick, ip, [callback])
 
-Should be called when a user disconnects from the server.
+Should be called when a user disconnects from the server. Returns a promise if no callback is given.
 
 
 # Install
