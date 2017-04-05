@@ -42,7 +42,7 @@ Should be called when a user disconnects from the server. Returns a promise if n
 
 
 # Tests
-Tests are written with [mocha](http://visionmedia.github.com/mocha/)
+Tests are written with [mocha](https://mochajs.org)
 
 ```bash
 npm test
