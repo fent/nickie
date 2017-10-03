@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "istanbul": "*",
-    "mocha": "*",
+    "mocha": ">=4.0.0",
     "sinon": "^3.0.0"
   },
   "engines": {
