@@ -1,5 +1,7 @@
 # nickie
 
+### * Abandoned *
+
 A nickserv bot for your irc server needs.
 
 [![Build Status](https://secure.travis-ci.org/fent/nickie.svg)](http://travis-ci.org/fent/nickie)
